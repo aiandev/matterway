@@ -8,17 +8,20 @@
 const getAllFilesExcept = (files, ignorePatterns) => {
     const filesWithFullPath = getFilesWithFullPath(files);
     const listFiles = filesWithFullPath.filter((filePath) => {
-    let inWhiteList = false;
+    let inWhiteList = true;
+
     ignorePatterns.forEach((pattern) => {
-      if(`!${filePath}` === pattern){
-        inWhiteList = true
-      }else if(filePath.includes(pattern) && pattern.startsWith('!/')){
-        inWhiteList = true
-      }else{
-        return false;
-        // TODO console.log(' I didn't complete full task because the time Sorry')
+
+      if(filePath === pattern && pattern.startsWith('/')){
+        inWhiteList = false
       }
+
+      if(filePath.includes(pattern) && !ignorePatterns.includes(`!${filePath}`)){
+        inWhiteList = false
+      }
+
     })
+
     return inWhiteList
   });
 
