@@ -10,19 +10,19 @@ function it(testName, callback) {
   }
 }
 
-// it('should return all files if no ignore patterns provided', () => {
-//   deepStrictEqual(
-//     getAllFilesExcept(
-//       [
-//         {isDirectory: false, name: 'package.json'},
-//         {isDirectory: false, name: 'index.js'},
-//         {isDirectory: true, name: 'src', files: []}
-//       ],
-//       []
-//     ).sort(),
-//     ['/index.js', '/package.json'].sort()
-//   );
-// });
+it('should return all files if no ignore patterns provided', () => {
+  deepStrictEqual(
+    getAllFilesExcept(
+      [
+        {isDirectory: false, name: 'package.json'},
+        {isDirectory: false, name: 'index.js'},
+        {isDirectory: true, name: 'src', files: []}
+      ],
+      []
+    ).sort(),
+    ['/index.js', '/package.json'].sort()
+  );
+});
 
 it('should work - example from readme', () => {
   deepStrictEqual(
