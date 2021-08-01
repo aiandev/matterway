@@ -6,26 +6,34 @@
  * @returns {string[]}
  */
 const getAllFilesExcept = (files, ignorePatterns) => {
-    const filesWithFullPath = getFilesWithFullPath(files);
-    const listFiles = filesWithFullPath.filter((filePath) => {
-    let inWhiteList = true;
 
-    ignorePatterns.forEach((pattern) => {
+  const filesWithFullPath     = getFilesWithFullPath(files);
+  const ignorePatternsMappped = mappedIgnorePatterns(ignorePatterns)
 
-      if(filePath === pattern && pattern.startsWith('/')){
-        inWhiteList = false
+  const listFiles = filesWithFullPath.filter((filePath) => {
+
+    return ignorePatternsMappped.every((pattern) => {
+      
+      let result = true;
+
+      if (!pattern.isWhiteList && filePath == pattern.path) {
+        result = false;
       }
 
-      if(filePath.includes(pattern) && !ignorePatterns.includes(`!${filePath}`)){
-        inWhiteList = false
+      if (
+        pattern.isDirectory &&
+        !pattern.isWhiteList &&
+        filePath.startsWith(pattern.path + "/") &&
+        !ignorePatterns.includes(`!${filePath}`)
+      ) {
+        result = false;
       }
 
-    })
-
-    return inWhiteList
+      return result;
+    });
   });
 
-  return listFiles
+  return listFiles;
 };
 
 function getFilesWithFullPath(files, currentdirName = "") {
@@ -43,4 +51,22 @@ function getFilesWithFullPath(files, currentdirName = "") {
   return paths;
 }
 
+function mappedIgnorePatterns(ignorePatterns){
+  return ignorePatterns.map((pattern) => {
+    const patternData = {
+      isDirectory: false,
+      isWhiteList: false,
+      path: pattern,
+    };
+
+    if (!pattern.includes(".")) {
+      patternData.isDirectory = true;
+    }
+
+    if (pattern.startsWith("!/")) {
+      patternData.isWhiteList = true;
+    }
+    return patternData;
+  });
+}
 module.exports.getAllFilesExcept = getAllFilesExcept;
